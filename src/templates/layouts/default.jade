@@ -1,0 +1,48 @@
+doctype html
+html(class="no-js" lang="")
+
+    //- HTML HEADER
+    head
+        meta(charset="utf-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible" content="IE=edge")
+        meta(name="description", content="")
+        meta(name="robots", content="index, follow")
+
+        title= title || 'Page title'
+        link(rel="shortcut icon", href="/favicon.ico", type="image/x-icon")
+
+        link(href="/css/main.css", rel="stylesheet")
+        script(src="/js/vendor/modernizr-build.js")
+
+        //- Include template-specific stylesheet by extending the css block
+        block css
+
+        //- Add anu other template-specific HEAD tags by extending the head block
+        block head
+
+    //- HTML BODY
+    body
+
+        //- HEADER
+        header#header(role="banner")
+            //- Include main-menu component
+            include ../components/main-menu.jade
+
+            //- Include template-specific header content
+            block header
+
+        //- BODY
+        #body(role="main")
+            //- The content block should contain the body of your template's content
+            block content
+
+        //- FOOTER
+        footer#footer(role="contentinfo")
+            block footer
+
+        //- JAVASCRIPT
+        script(src='/js/bundle.min.js')
+
+        //- Include template-specific javascript files by extending the js block
+        block js

@@ -1,0 +1,9 @@
+{
+  "name": "LUMC-Redesign-Bower",
+  "version": "1.0.0",
+  "main": "dest/js",
+  "private": true,
+  "dependencies": {
+    "bourbon": "^4.2.6"
+  }
+}
