@@ -1,5 +1,5 @@
 {
-  "name": "LUMC-Redesign-Bower",
+  "name": "ES6-Gulp-Project-Boilerplate",
   "version": "1.0.0",
   "main": "dest/js",
   "private": true,

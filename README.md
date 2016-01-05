@@ -1,8 +1,8 @@
-#LUMC Frontend Redesign 2016 Project
+#ECMAScript 6 Project Boilerplate with GULP
 
 ## Introductie
 
-In dit project staan alles frontend codes die nodig zijn voor het LUMC redesign 2016 project.
+Basis opzet voor een ECMAScript 6 project met GULP als task manager.
 
 Bij het runnen van je project wordt er een 'dest' folder aangemaakt. Dit is de plek waar alle gecompileerde code neergezet
 zal worden. Pas geen code aan in deze folder. Doe dat in de 'src' folder.

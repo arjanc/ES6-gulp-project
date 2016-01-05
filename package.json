@@ -1,9 +1,9 @@
 {
-  "name": "LUMC-Redesign-Gulp",
+  "name": "ES6-Gulp-Project-Boilerplate",
   "version": "1.0.0",
-  "description": "Redesign of the LUMC website for 2016.",
+  "description": "ECMAScript 6 project boilerplate with GULP as taskmanager.",
   "main": "gulpfile.js",
-  "author": "Arjan Ceelen @ Indivirtual",
+  "author": "Arjan Ceelen @ Celar",
   "private": true,
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta6",
