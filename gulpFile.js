@@ -76,26 +76,25 @@ gulp.task('iconfont', function(){
 	return gulp.src([paths.src + '/assets/icons/*.svg'])
 			.pipe(iconfont({
 				fontName: 'webfont-icons',
-				appendUnicode: true,
+				appendUnicode: false,
 				formats: ['ttf', 'eot', 'woff'],
 				autohint: true,
 				timestamp: runTimestamp
 			}))
 			.on('glyphs', function(glyphs, options) {
 				var options = {
-					glyphs: glyphs.map(function(glyph) {
+					glyphs: glyphs.map(function(glyphs) {
 						// this line is needed because gulp-iconfont has changed the api from 2.0
-						return { name: glyph.name, codepoint: glyph.unicode[0].charCodeAt(0) }
+						return { name: glyphs.name, codepoint: glyphs.unicode[0].charCodeAt(0) }
 					}),
 					fontName: 'webfont-icons',
 					fontPath: 'fonts/', // set path to font (from your CSS file if relative)
 					className: 'icon' // set class name in your CSS
 				};
-				gulp.src(paths.src + '/sass/iconfont.scss')
+				gulp.src(paths.src + '/iconfont/iconfont-template.scss')
 						.pipe(consolidate('lodash', options))
 						.pipe(rename({ basename:'webfont-icons' }))
 						.pipe(gulp.dest(paths.src + '/generated/iconfont/')); // set path to export your CSS
-
 			})
 			.pipe(gulp.dest(paths.output + '/css/fonts/'))
 });
