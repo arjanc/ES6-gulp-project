@@ -49,7 +49,7 @@ gulp.task('es6', function() {
 
 // create a TASK to compile Sass into CSS using gulp-sass
 gulp.task('css', function(){
-	gulp.src([paths.style.all])
+	return gulp.src([paths.style.all])
 			.pipe(plumber()) // Prevent pipe breaking caused by errors from gulp plugins
 			.pipe(sass({style: 'expanded'}))
 			.pipe(gulp.dest(paths.style.output));
