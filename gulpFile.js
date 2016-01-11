@@ -50,8 +50,12 @@ gulp.task('es6', function() {
 // create a TASK to compile Sass into CSS using gulp-sass
 gulp.task('css', function(){
 	return gulp.src([paths.style.all])
-			.pipe(plumber()) // Prevent pipe breaking caused by errors from gulp plugins
-			.pipe(sass({style: 'expanded'}))
+			.pipe(sass({style: 'expanded'})
+					.on('error', function (err) {
+						console.error(err);
+						this.emit('end');
+					})
+			)
 			.pipe(gulp.dest(paths.style.output));
 });
 gulp.task('minify-css', function() {
