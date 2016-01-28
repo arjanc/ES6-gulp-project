@@ -1,0 +1,3 @@
+src/js/libs/**/*.js
+src/generated/js/templates.js
+node_modules/**
