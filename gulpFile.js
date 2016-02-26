@@ -81,30 +81,25 @@ gulp.task('iconfont', function(){
 			.pipe(iconfont({
 				normalize: true,
 				fontName: 'webfont-icons',
-				appendCodepoints: true
+				appendUnicode: false,
+				appendCodepoints: true,
+				formats: ['ttf', 'eot', 'woff'],
+				timestamp: runTimestamp
 			}))
-
-		// automatically assign a unicode value to the icon
-			.on('codepoints', function(codepoints, options) {
-				codepoints.forEach(function(glyph, idx, arr) {
-					arr[idx].codepoint = glyph.codepoint.toString(16);
-				});
-
-				//-----------------------
-				// START additional stuff to generate an scss file with all the font characters inside it.
-				//-----------------------
+			.on('glyphs', function(glyphs, options) {
+				var options = {
+					glyphs: glyphs.map(function(glyphs) {
+						// this line is needed because gulp-iconfont has changed the api from 2.0
+						return { name: glyphs.name, codepoint: glyphs.unicode[0].charCodeAt(0) }
+					}),
+					fontName: 'webfont-icons',
+					fontPath: 'fonts/', // set path to font (from your CSS file if relative)
+					className: 'icon' // set class name in your CSS
+				};
 				gulp.src(paths.src + '/iconfont/iconfont-template.scss')
-						.pipe(consolidate('lodash', {
-							glyphs: codepoints,
-							fontName: 'webfont-icons',
-							fontPath: 'fonts/',
-							className: 'icon'
-						}))
-						.pipe(rename('webfont-icons'))
-						.pipe(gulp.dest(paths.src + '/generated/iconfont/'));
-				//-----------------------
-				// END additional stuff to generate an scss file with all the font characters inside it.
-				//-----------------------
+						.pipe(consolidate('lodash', options))
+						.pipe(rename({ basename:'webfont-icons' }))
+						.pipe(gulp.dest(paths.src + '/generated/iconfont/')); // set path to export your CSS
 			})
 			.pipe(gulp.dest(paths.output + '/css/fonts/'))
 });
