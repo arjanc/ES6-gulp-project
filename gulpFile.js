@@ -100,6 +100,10 @@ gulp.task('iconfont', function(){
 						.pipe(consolidate('lodash', options))
 						.pipe(rename({ basename:'webfont-icons' }))
 						.pipe(gulp.dest(paths.src + '/generated/iconfont/')); // set path to export your CSS
+				gulp.src(paths.src + '/iconfont/html-template.html')
+						.pipe(consolidate('lodash', options))
+						.pipe(rename({ basename: 'webfont'}))
+						.pipe(gulp.dest(paths.output)); // set path to export your HTML
 			})
 			.pipe(gulp.dest(paths.output + '/css/fonts/'))
 });
@@ -129,6 +133,7 @@ gulp.task('watch', function(){
 	gulp.watch([paths.src + '/sass/**/*.scss'], ['css', 'minify-css']);
 	gulp.watch(paths.src + '/js/**/*.js', ['es6']);
 	gulp.watch(paths.src + '/templates/**/*.jade', ['jade']);
+	gulp.watch('src/assets/icons/*.svg', ['iconfont', 'css', 'minify-css']);
 });
 
 // finally, create a TASK that will run all commands when typing "gulp"
