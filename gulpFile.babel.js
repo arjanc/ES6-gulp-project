@@ -1,25 +1,28 @@
-var gulp = require('gulp'),
-		fs = require('fs'),
-		browserify = require('browserify'),
-		babelify = require('babelify'),
-		source = require('vinyl-source-stream'),
-		uglify = require('gulp-uglify'),
-		cssnano = require('gulp-cssnano'),
-		rename = require('gulp-rename'),
-		buffer = require('vinyl-buffer'),
-		sass = require('gulp-sass'),
-		modernizr = require('gulp-modernizr'),
-		iconfont = require('gulp-iconfont'),
-		consolidate = require('gulp-consolidate'),
-		webserver = require('gulp-webserver'),
-		jade = require('gulp-jade'),
-		plumber = require('gulp-plumber');
+'use stricts';
 
+import gulp from 'gulp';
+import fs from 'fs';
+import browserify from 'browserify';
+import babelify from 'babelify';
+import source from 'vinyl-source-stream';
+import uglify from 'gulp-uglify';
+import cssnano from 'gulp-cssnano';
+import rename from 'gulp-rename';
+import buffer from 'vinyl-buffer';
+import sass from 'gulp-sass';
+import sourcemaps from 'gulp-sourcemaps';
+import modernizr from 'gulp-modernizr';
+import iconfont from 'gulp-iconfont';
+import consolidate from 'gulp-consolidate';
+import webserver from 'gulp-webserver';
+import jade from 'gulp-jade';
+import plumber from 'gulp-plumber';
+import runSequence from 'run-sequence';
 
 ////////////////////////////////////////////////////////////////////
 // Configuration settings
 
-var paths = {
+let paths = {
 	'src': './src',
 	'output': './dest'
 }
@@ -29,6 +32,14 @@ paths.style = {
 	all: paths.src + '/sass/main.scss',
 	output: paths.output + '/css/'
 };
+
+let jadeData = {
+	title: 'Gulp ES6 Project'
+}
+
+////////////////////////////////////////////////////////////////////
+// Tasks
+
 gulp.task('es6', function() {
 	browserify(
 			{
@@ -40,6 +51,7 @@ gulp.task('es6', function() {
 			}))
 			.bundle()
 			.pipe(source('bundle.js'))
+			.pipe(gulp.dest(paths.output + '/js'))
 			.pipe(buffer())
 			.pipe(uglify())
 			.on('error', function(err) { console.error(err); })
@@ -50,15 +62,17 @@ gulp.task('es6', function() {
 // create a TASK to compile Sass into CSS using gulp-sass
 gulp.task('css', function(){
 	return gulp.src([paths.style.all])
+			.pipe(sourcemaps.init())
 			.pipe(sass({style: 'expanded'})
 					.on('error', function (err) {
 						console.error(err);
 						this.emit('end');
 					})
-			)
+	)
+			.pipe(sourcemaps.write('./maps'))
 			.pipe(gulp.dest(paths.style.output));
 });
-gulp.task('minify-css', function() {
+gulp.task('minify-css', ['css'], function() {
 	return gulp.src([paths.style.output + '*.css', '!'+paths.style.output + '*.min.css'])
 			.pipe(cssnano())
 			.pipe(rename({ extname: '.min.css' }))
@@ -66,7 +80,7 @@ gulp.task('minify-css', function() {
 });
 
 // create a TASK to build a modernizr script using gulp-modernizr
-var modernizrSettings = JSON.parse(fs.readFileSync('./modernizr.json'));
+let modernizrSettings = JSON.parse(fs.readFileSync('./modernizr.json'));
 gulp.task('modernizr', function(){
 	gulp.src(paths.src + '/js/**/*.js')
 			.pipe(modernizr('modernizr-build.js', modernizrSettings))
@@ -75,7 +89,7 @@ gulp.task('modernizr', function(){
 
 // create a TASK to WATCH for changes in your files
 // this will 'watch" for any changes in your files and rerun gulp if necessary
-var runTimestamp = Math.round(Date.now()/1000);
+let runTimestamp = Math.round(Date.now()/1000);
 gulp.task('iconfont', function(){
 	return gulp.src([paths.src + '/assets/icons/*.svg'])
 			.pipe(iconfont({
@@ -111,10 +125,11 @@ gulp.task('iconfont', function(){
 gulp.task('webserver', function() {
 	gulp.src(paths.output)
 			.pipe(webserver({
+				host: '0.0.0.0',
 				livereload: false,
 				directoryListing: false,
 				open: true,
-				port: 8900
+				port: 8000
 			}));
 });
 
@@ -122,21 +137,63 @@ gulp.task('jade', function() {
 	return gulp.src(paths.src + '/templates/*.jade')
 			.pipe(plumber()) // Prevent pipe breaking caused by errors from gulp plugins
 			.pipe(jade({
+				data: jadeData,
 				pretty:true
 			})) // pip to jade plugin
 			.pipe(gulp.dest(paths.output)); // tell gulp our output folder
 });
 
+////////////////////////////////////////////////////////////////////
+// Copy files
+
+gulp.task('copy:svg', function () {
+	return gulp
+			.src(paths.src + '/assets/svg/**/*')
+			.pipe(gulp.dest(paths.output + '/svg'))
+});
+
+gulp.task('copy:img', function () {
+	return gulp
+			.src(paths.src + '/assets/img/*')
+			.pipe(gulp.dest(paths.output + '/img'))
+});
+gulp.task('copy', ['copy:svg', 'copy:img'], function(){});
+
 // create a TASK to WATCH for changes in your files
 // this will "watch" for any changes in your files and rerun gulp if necessary
 gulp.task('watch', function(){
-	gulp.watch([paths.src + '/sass/**/*.scss'], ['css', 'minify-css']);
-	gulp.watch(paths.src + '/js/**/*.js', ['es6']);
-	gulp.watch(paths.src + '/templates/**/*.jade', ['jade']);
+	gulp.watch('src/sass/**/*.scss', ['css', 'minify-css']);
+	gulp.watch('src/js/**/*.js', ['es6']);
+	gulp.watch('src/templates/**/*.jade', ['jade']);
 	gulp.watch('src/assets/icons/*.svg', ['iconfont', 'css', 'minify-css']);
+	gulp.watch('src/assets/img/**/*', ['copy:img']);
+	gulp.watch('src/assets/svg/**/*', ['copy:svg']);
 });
 
 // finally, create a TASK that will run all commands when typing "gulp"
 // in Terminal
-gulp.task('default', ['modernizr', 'iconfont', 'css', 'minify-css', 'es6', 'jade', 'watch', 'webserver'], function() {});
-gulp.task('build', ['modernizr', 'iconfont', 'css', 'minify-css', 'es6', 'jade'], function() {});
+
+// This will run in this order:
+// * copy and modernizr in parallel
+// * iconfont
+// * css
+// * minify-css
+// * es6 and jade in parallel
+// * Finally call the callback function
+gulp.task('build', function(callback) {
+	runSequence(
+			['copy', 'modernizr'],
+			'iconfont',
+			'css',
+			'minify-css',
+			['es6', 'jade'],
+			callback);
+});
+
+gulp.task('default', function(callback) {
+	runSequence(
+			'build',
+			['webserver', 'watch'],
+			callback
+	);
+});

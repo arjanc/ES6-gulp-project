@@ -1,6 +1,6 @@
 /*!
- * modernizr v3.2.0
- * Build http://modernizr.com/download?--dontmin
+ * modernizr v3.3.1
+ * Build http://modernizr.com/download?-setclasses-dontmin
  *
  * Copyright (c)
  *  Faruk Ates
@@ -36,15 +36,15 @@
 
   var ModernizrProto = {
     // The current version, dummy
-    _version: '3.2.0',
+    _version: '3.3.1',
 
     // Any settings that don't work as separate modules
     // can go in here as configuration.
     _config: {
-      'classPrefix' : '',
-      'enableClasses' : true,
-      'enableJSClass' : true,
-      'usePrefixes' : true
+      'classPrefix': '',
+      'enableClasses': true,
+      'enableJSClass': true,
+      'usePrefixes': true
     },
 
     // Queue of tests
@@ -65,11 +65,11 @@
     },
 
     addTest: function(name, fn, options) {
-      tests.push({name : name, fn : fn, options : options});
+      tests.push({name: name, fn: fn, options: options});
     },
 
     addAsyncTest: function(fn) {
-      tests.push({name : null, fn : fn});
+      tests.push({name: null, fn: fn});
     }
   };
 
