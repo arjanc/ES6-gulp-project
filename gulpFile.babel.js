@@ -11,13 +11,13 @@ import rename from 'gulp-rename';
 import buffer from 'vinyl-buffer';
 import sass from 'gulp-sass';
 import sourcemaps from 'gulp-sourcemaps';
-import modernizr from 'gulp-modernizr';
 import iconfont from 'gulp-iconfont';
 import consolidate from 'gulp-consolidate';
 import webserver from 'gulp-webserver';
 import jade from 'gulp-jade';
 import plumber from 'gulp-plumber';
 import runSequence from 'run-sequence';
+import modernizr from 'modernizr';
 
 ////////////////////////////////////////////////////////////////////
 // Configuration settings
@@ -79,25 +79,32 @@ gulp.task('minify-css', ['css'], function() {
 			.pipe(gulp.dest(paths.style.output));
 });
 
-// create a TASK to build a modernizr script using gulp-modernizr
-let modernizrSettings = JSON.parse(fs.readFileSync('./modernizr.json'));
-gulp.task('modernizr', function(){
-	gulp.src(paths.src + '/js/**/*.js')
-			.pipe(modernizr('modernizr-build.js', modernizrSettings))
-			.pipe(gulp.dest(paths.output + '/js/vendor'));
+////////////////////////////////////////////////////////////////////
+// Custom modernizr
+let modernizrConfig = JSON.parse(fs.readFileSync('./modernizr.json'));
+gulp.task('modernizr', function(cb) {
+	modernizr.build(modernizrConfig, (result) => {
+			fs.writeFile(paths.output + '/js/vendor/modernizr-build.js', result, cb);
+	});
+});
+
+// Because we give the icon font an unique name we must empty the font folder.
+gulp.task('clean-iconfont', function () {
+	return gulp.src(paths.output + '/css/fonts/', {read: false})
+			.pipe(clean());
 });
 
 // create a TASK to WATCH for changes in your files
 // this will 'watch" for any changes in your files and rerun gulp if necessary
 let runTimestamp = Math.round(Date.now()/1000);
-gulp.task('iconfont', function(){
+gulp.task('iconfont', ['clean-iconfont'], function(){
 	return gulp.src([paths.src + '/assets/icons/*.svg'])
 			.pipe(iconfont({
 				normalize: true,
-				fontName: 'webfont-icons',
+				fontName: 'webfont-icons' + runTimestamp,
 				appendUnicode: false,
 				appendCodepoints: true,
-				formats: ['ttf', 'eot', 'woff'],
+				formats: ['ttf', 'eot', 'woff', 'woff2', 'svg'],
 				timestamp: runTimestamp
 			}))
 			.on('glyphs', function(glyphs, options) {
@@ -106,7 +113,7 @@ gulp.task('iconfont', function(){
 						// this line is needed because gulp-iconfont has changed the api from 2.0
 						return { name: glyphs.name, codepoint: glyphs.unicode[0].charCodeAt(0) }
 					}),
-					fontName: 'webfont-icons',
+					fontName: 'webfont-icons' + runTimestamp,
 					fontPath: 'fonts/', // set path to font (from your CSS file if relative)
 					className: 'icon' // set class name in your CSS
 				};

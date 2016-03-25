@@ -66,6 +66,14 @@ voor windows gebruikers: installeer ttfautohint (http://www.freetype.org/ttfauto
 
 ## ICON FONTS
 Je kan een extra icon toevoegen aan de src/assets/icon map. Dit moet een svg bestand zijn van 512x512 pixels. De naam is ook de classnaam die je in de css gebruikt.
+Bij het genereren wordt er ook een SASS bestand aangemaakt met daarin een mixin. Deze kun je in je project gebruiken. 
+Voorbeeld:
+```
+@include icon('%icon_hamburger');
+```
+
+## MODERNIZR
+We genereren een custom modernizr script. Deze is aan te sturen door een 'modernizr.json' welke je kan aanmaken op [modernizr.com](https://modernizr.com/download?setclasses).
 
 ## Gulp devDependencies
 Use the ``npm`` command to download the Gulp dependencies : ``npm install``.
@@ -79,6 +87,7 @@ Use the ``npm`` command to download the Gulp dependencies : ``npm install``.
 | [babelify]											    																			| ^7.2.0   |
 | [eslint]													 					    													| ^1.10.3   |
 | [gulp]                                                                    | ~3.9.0   |
+| [gulp-clean]                                                              | ^0.3.2   |
 | [gulp-consolidate]                                                        | ^0.1.2   |
 | [gulp-cssnano]                          		                              | ^2.0.1   |
 | [gulp-iconfont]                                                           | ^5.0.1   |
@@ -93,6 +102,7 @@ Use the ``npm`` command to download the Gulp dependencies : ``npm install``.
 | [gulp-sequence]					 								 					    										| ^1.1.5   |
 | [vinyl-buffer]				                                                    | ^1.0.0   |
 | [vinyl-source-stream]										    															| ^1.1.0   |
+| [modernizr]																																| ^2.8.3	 |
 
 
 ## Gulp dependencies
