@@ -2,6 +2,7 @@
 
 import gulp from 'gulp';
 import fs from 'fs';
+import path from 'path';
 import browserify from 'browserify';
 import babelify from 'babelify';
 import source from 'vinyl-source-stream';
@@ -82,10 +83,27 @@ gulp.task('minify-css', ['css'], function() {
 ////////////////////////////////////////////////////////////////////
 // Custom modernizr
 let modernizrConfig = JSON.parse(fs.readFileSync('./modernizr.json'));
-gulp.task('modernizr', function(cb) {
+function mkdirSync(path) {
+	try {
+		fs.mkdirSync(path);
+	} catch(e) {
+		if ( e.code != 'EEXIST' ) throw e;
+	}
+}
+function mkdirpSync(dirpath) {
+	let parts = dirpath.split(path.sep);
+	for( let i = 1; i <= parts.length; i++ ) {
+		mkdirSync( path.join.apply(null, parts.slice(0, i)) );
+	}
+}
+
+gulp.task('modernizr', function (cb) {
 	modernizr.build(modernizrConfig, (result) => {
-			fs.writeFile(paths.output + '/js/vendor/modernizr-build.js', result, cb);
-	});
+		// check is destination path exists, create if not.
+		mkdirpSync(paths.output + '/js/vendor/');
+
+	fs.writeFile(paths.output + '/js/vendor/modernizr-build.js', result, cb);
+});
 });
 
 // Because we give the icon font an unique name we must empty the font folder.
