@@ -1,0 +1,28 @@
+/* ==========  COLORS  ========== */
+@import "color-definitions";
+
+$color-accent: $base-alpha !default;
+
+// Font sizes
+$text-base-size: 16px !default;
+
+$giga:    70px;
+$alpha:   40px;
+$beta:    34px;
+$gamma:   30px;
+$delta:   24px;
+$epsilon: 20px;
+$zeta:    18px;
+$eta:     14px;
+$heta:    13px;
+$iota:    12px;
+
+/* ==========  TYPOGRAPHY  ========== */
+
+$text-color-primary: $base-black !default;
+$text-link-color: $color-accent !default;
+
+/* ==========  IMAGES  ========== */
+$image_path: '/images' !default;
+
+// your variables here...

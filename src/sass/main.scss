@@ -1,6 +1,15 @@
+// Vendor
+@import "../../bower_components/bourbon/app/assets/stylesheets/bourbon";
+
+// Mixins
+@import 'mixins/mixins';
+
+// variables
+@import 'variables';
+
 // base
 @import 'base/sanitize';
-@import 'base/typography';
+@import 'typography/typography';
 
 // Icons
 @import '../generated/iconfont/webfont-icons';
@@ -15,3 +24,6 @@
 
 // components
 @import 'components/buttons';
+
+// print style
+@import 'print';
