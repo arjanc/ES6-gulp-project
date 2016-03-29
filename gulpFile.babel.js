@@ -19,6 +19,7 @@ import jade from 'gulp-jade';
 import plumber from 'gulp-plumber';
 import runSequence from 'run-sequence';
 import modernizr from 'modernizr';
+import clean from 'gulp-clean';
 
 ////////////////////////////////////////////////////////////////////
 // Configuration settings
