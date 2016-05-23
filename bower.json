@@ -1,5 +1,5 @@
 {
-  "name": "ES6-Gulp-Project-Boilerplate",
+  "name": "es6-gulp-project-boilerplate",
   "version": "1.0.0",
   "main": "dest/js",
   "private": true,
