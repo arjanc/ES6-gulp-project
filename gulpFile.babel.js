@@ -84,27 +84,23 @@ gulp.task('minify-css', ['css'], function() {
 ////////////////////////////////////////////////////////////////////
 // Custom modernizr
 let modernizrConfig = JSON.parse(fs.readFileSync('./modernizr.json'));
-function mkdirSync(path) {
-	try {
-		fs.mkdirSync(path);
-	} catch(e) {
-		if ( e.code != 'EEXIST' ) throw e;
-	}
-}
-function mkdirpSync(dirpath) {
-	let parts = dirpath.split(path.sep);
-	for( let i = 1; i <= parts.length; i++ ) {
-		mkdirSync( path.join.apply(null, parts.slice(0, i)) );
-	}
-}
 
+// Create recursive directory structure...
+function mkdir(dirPath, mode,callback)
+{
+	fs.mkdir(dirPath, mode, function (error) {
+		if (error && error.code == 'ENOENT') {
+			mkdir(path.dirname(dirPath), mode, mkdir.bind(this,dirPath,mode,callback));
+		} else if (callback) callback(error);
+	});
+}
 gulp.task('modernizr', function (cb) {
 	modernizr.build(modernizrConfig, (result) => {
 		// check is destination path exists, create if not.
-		mkdirpSync(paths.output + '/js/vendor/');
-
-	fs.writeFile(paths.output + '/js/vendor/modernizr-build.js', result, cb);
-});
+		mkdir(paths.output + '/js/vendor/', null, function(){
+			fs.writeFile(paths.output + '/js/vendor/modernizr-build.js', result, cb);
+		});
+	});
 });
 
 // Because we give the icon font an unique name we must empty the font folder.
