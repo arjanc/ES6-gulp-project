@@ -150,7 +150,7 @@ gulp.task('webserver', function() {
 				host: '0.0.0.0',
 				livereload: false,
 				directoryListing: false,
-				open: true,
+				open: 'http://localhost:' + port,
 				port: 8000
 			}));
 });
